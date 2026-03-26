@@ -79,7 +79,7 @@
 .ok-side {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  overflow: hidden;
 }
 
 /* Asks push to bottom so spread stays centered */

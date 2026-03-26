@@ -112,7 +112,8 @@ export function Orderbook({
   const ROW_HEIGHT = 24;
   const HEADER_HEIGHT = showHeaders ? 32 : 0;
   const SPREAD_HEIGHT = showSpread ? 32 : 0;
-  const minHeight = HEADER_HEIGHT + depth * ROW_HEIGHT * 2 + SPREAD_HEIGHT + 2;
+  const sideHeight = depth * ROW_HEIGHT;
+  const minHeight = HEADER_HEIGHT + sideHeight * 2 + SPREAD_HEIGHT + 2;
 
   return (
     <div
@@ -128,7 +129,7 @@ export function Orderbook({
       )}
 
       <div className={`ok-body ${isHorizontal ? "ok-body-horizontal" : ""}`}>
-        <div className="ok-side ok-asks">
+        <div className="ok-side ok-asks" style={{ height: sideHeight }}>
           {smoothedAsks.map((level) => (
             <OrderbookRow
               key={level.price}
@@ -159,7 +160,7 @@ export function Orderbook({
           </div>
         )}
 
-        <div className="ok-side ok-bids">
+        <div className="ok-side ok-bids" style={{ height: sideHeight }}>
           {smoothedBids.map((level) => (
             <OrderbookRow
               key={level.price}
