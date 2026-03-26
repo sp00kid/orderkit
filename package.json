@@ -3,6 +3,25 @@
   "version": "0.1.0",
   "description": "A lightweight, animated React orderbook component",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sp00kid/orderkit.git"
+  },
+  "homepage": "https://github.com/sp00kid/orderkit",
+  "bugs": "https://github.com/sp00kid/orderkit/issues",
+  "author": "Rajul <rajulranga@gmail.com>",
+  "keywords": [
+    "react",
+    "orderbook",
+    "order-book",
+    "trading",
+    "prediction-market",
+    "crypto",
+    "exchange",
+    "depth",
+    "polymarket",
+    "fintech"
+  ],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
