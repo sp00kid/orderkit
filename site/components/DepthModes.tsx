@@ -45,7 +45,17 @@ export default function DepthModes() {
         </p>
       </div>
       <div className="demo-container">
-        <div className="toggle-row">
+        <Orderbook
+          bids={book.bids}
+          asks={book.asks}
+          theme="light"
+          depth={8}
+          depthMode={mode}
+          highlightChanges
+          formatPrice={formatPrice}
+          formatSize={formatSize}
+        />
+        <div className="toggle-row-below">
           <button
             className={`toggle-btn ${mode === "cumulative" ? "toggle-btn-active" : ""}`}
             onClick={() => setMode("cumulative")}
@@ -59,16 +69,6 @@ export default function DepthModes() {
             Level
           </button>
         </div>
-        <Orderbook
-          bids={book.bids}
-          asks={book.asks}
-          theme="light"
-          depth={8}
-          depthMode={mode}
-          highlightChanges
-          formatPrice={formatPrice}
-          formatSize={formatSize}
-        />
       </div>
     </section>
   );

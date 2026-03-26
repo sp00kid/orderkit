@@ -2,7 +2,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-bottom: 16px;
+  margin-top: 16px;
+  justify-content: center;
 }
 
 .tab {

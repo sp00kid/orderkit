@@ -81,16 +81,16 @@ body {
   text-wrap: balance;
 }
 
-/* Demo container */
+/* Demo container — always has breathing room from prose above */
 .demo-container {
   max-width: var(--page-demo-width);
-  margin: 0 auto 28px;
+  margin: 32px auto 28px;
   padding: 0 24px;
 }
 
 .demo-container-wide {
   max-width: var(--page-demo-width-wide);
-  margin: 0 auto 28px;
+  margin: 32px auto 28px;
   padding: 0 24px;
 }
 
@@ -130,26 +130,35 @@ body {
   border-radius: 4px;
 }
 
-/* Toggle buttons */
-.toggle-row {
+/* Toggle buttons — below the component, centered */
+.toggle-row,
+.toggle-row-below {
   display: flex;
   gap: 6px;
+  justify-content: center;
+}
+
+.toggle-row {
   margin-bottom: 16px;
 }
 
+.toggle-row-below {
+  margin-top: 16px;
+}
+
 .toggle-btn {
-  background: transparent;
+  background: var(--page-bg);
   border: 1px solid var(--page-border);
   color: var(--page-text-dim);
-  padding: 6px 14px;
+  padding: 5px 14px;
   font-size: 12px;
   font-family: var(--page-font);
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 20px;
   transition-property: border-color, color, background-color, scale;
   transition-duration: 150ms;
   transition-timing-function: ease;
-  min-height: 40px;
+  min-height: 32px;
   display: inline-flex;
   align-items: center;
 }
@@ -157,7 +166,7 @@ body {
 .toggle-btn:hover {
   border-color: #ccc;
   color: var(--page-text);
-  background: rgba(0, 0, 0, 0.015);
+  background: rgba(0, 0, 0, 0.02);
 }
 
 .toggle-btn:active {
@@ -167,7 +176,7 @@ body {
 .toggle-btn-active {
   border-color: var(--page-text);
   color: var(--page-text);
-  background: rgba(0, 0, 0, 0.025);
+  background: rgba(0, 0, 0, 0.03);
 }
 
 /* Caption */

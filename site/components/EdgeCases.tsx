@@ -32,6 +32,15 @@ export default function EdgeCases() {
         <p>On prediction markets, this is Tuesday.</p>
       </div>
       <div className="demo-container">
+        <Orderbook
+          bids={current.bids}
+          asks={current.asks}
+          theme="light"
+          depth={10}
+          highlightChanges={false}
+          formatPrice={formatPrice}
+          formatSize={formatSize}
+        />
         <div className={styles.tabs}>
           {SCENARIOS.map(([key, { label }]) => (
             <button
@@ -43,15 +52,6 @@ export default function EdgeCases() {
             </button>
           ))}
         </div>
-        <Orderbook
-          bids={current.bids}
-          asks={current.asks}
-          theme="light"
-          depth={10}
-          highlightChanges={false}
-          formatPrice={formatPrice}
-          formatSize={formatSize}
-        />
       </div>
     </section>
   );
