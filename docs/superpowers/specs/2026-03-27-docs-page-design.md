@@ -132,7 +132,7 @@ Link to GitHub repo. Link to npm package.
 
 ```
 orderkit/
-├── docs/                    # Next.js app
+├── site/                    # Next.js app (not docs/ — avoids collision with specs/plans)
 │   ├── app/
 │   │   ├── layout.tsx
 │   │   ├── page.tsx         # The single page
