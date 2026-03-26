@@ -44,17 +44,30 @@ export default function Hero() {
 
   return (
     <section className={styles.hero}>
-      <div className={styles.title}>orderkit</div>
+      <div className={styles.header}>
+        <h1 className={styles.title}>orderkit</h1>
+        <p className={styles.subtitle}>March 2026</p>
+      </div>
+      <div className={styles.intro}>
+        <p>
+          A lightweight, animated orderbook component for React. Zero
+          dependencies beyond React 18, two required props, 3.1KB gzipped.
+        </p>
+      </div>
       <div className={styles.demo}>
         <Orderbook
           bids={book.bids}
           asks={book.asks}
+          theme="light"
           depth={10}
-          depthMode="level"
+          depthMode="cumulative"
           highlightChanges
           formatPrice={formatPrice}
           formatSize={formatSize}
         />
+      </div>
+      <div className={styles.caption}>
+        Prediction market orderbook with live simulated data.
       </div>
       <div className={styles.copy}>
         <p>

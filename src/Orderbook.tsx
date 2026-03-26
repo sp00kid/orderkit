@@ -108,12 +108,11 @@ export function Orderbook({
   const isHorizontal = layout === "horizontal";
 
   // Lock min-height so the container never collapses on data loss.
-  // height = headers(32) + asks(depth * rowHeight) + spread(32) + bids(depth * rowHeight) + borders(2)
   const ROW_HEIGHT = 24;
-  const HEADER_HEIGHT = showHeaders ? 32 : 0;
+  const HEADER_HEIGHT = showHeaders ? 29 : 0;
   const SPREAD_HEIGHT = showSpread ? 32 : 0;
   const sideHeight = depth * ROW_HEIGHT;
-  const minHeight = HEADER_HEIGHT + sideHeight * 2 + SPREAD_HEIGHT + 2;
+  const minHeight = HEADER_HEIGHT + sideHeight * 2 + SPREAD_HEIGHT;
 
   return (
     <div

@@ -1,22 +1,67 @@
 .hero {
-  padding: 120px 0 80px;
+  padding: 100px 0 80px;
+}
+
+.header {
+  max-width: var(--page-prose-width);
+  margin: 0 auto 8px;
+  padding: 0 24px;
 }
 
 .title {
-  max-width: var(--page-demo-width);
-  margin: 0 auto 24px;
-  padding: 0 24px;
-  font-size: 11px;
+  font-size: 24px;
   font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
+  color: var(--page-text);
+  text-wrap: balance;
+}
+
+.subtitle {
+  font-size: 14px;
   color: var(--page-text-dim);
+  margin-top: 4px;
+}
+
+.intro {
+  max-width: var(--page-prose-width);
+  margin: 0 auto 40px;
+  padding: 0 24px;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--page-text-muted);
+  text-wrap: pretty;
+}
+
+.intro code {
+  font-family: var(--page-mono);
+  font-size: 0.875em;
+  background: rgba(0, 0, 0, 0.04);
+  padding: 2px 6px;
+  border-radius: 3px;
 }
 
 .demo {
   max-width: var(--page-demo-width);
+  margin: 0 auto 12px;
+  padding: 0 24px;
+}
+
+/* make-interfaces-feel-better: layered shadow for depth */
+.demo :global(.ok-orderbook) {
+  border-radius: 10px;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.06),
+    0 4px 16px rgba(0, 0, 0, 0.04),
+    0 0 0 1px rgba(0, 0, 0, 0.04);
+  border: none;
+}
+
+.caption {
+  max-width: var(--page-demo-width);
   margin: 0 auto 48px;
   padding: 0 24px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--page-text-dim);
 }
 
 .copy {
@@ -26,6 +71,7 @@
   font-size: 16px;
   line-height: 1.7;
   color: var(--page-text-muted);
+  text-wrap: pretty;
 }
 
 .copy p {

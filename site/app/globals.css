@@ -1,11 +1,12 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --page-bg: #090909;
-  --page-text: #d4d4d4;
-  --page-text-muted: #737373;
-  --page-text-dim: #404040;
-  --page-border: #1a1a1a;
+  --page-bg: #ffffff;
+  --page-text: #171717;
+  --page-text-muted: #525252;
+  --page-text-dim: #a3a3a3;
+  --page-border: #e5e5e5;
+  --page-code-bg: #fafafa;
   --page-prose-width: 720px;
   --page-demo-width: 560px;
   --page-demo-width-wide: 900px;
@@ -18,7 +19,9 @@ html {
   background: var(--page-bg);
   color: var(--page-text);
   font-family: var(--page-font);
+  /* make-interfaces-feel-better: font smoothing */
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -33,6 +36,8 @@ body {
   font-size: 16px;
   line-height: 1.7;
   color: var(--page-text-muted);
+  /* make-interfaces-feel-better: text wrapping */
+  text-wrap: pretty;
 }
 
 .prose p {
@@ -62,16 +67,16 @@ body {
   padding: var(--page-section-gap) 0;
 }
 
-/* Section label */
+/* Section label — Liveline-style: proper heading + thin rule */
 .section-label {
   max-width: var(--page-prose-width);
-  margin: 0 auto 24px;
-  padding: 0 24px;
-  font-size: 11px;
+  margin: 0 auto 32px;
+  padding: 0 24px 12px;
+  font-size: 15px;
   font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--page-text-dim);
+  color: var(--page-text);
+  border-bottom: 1px solid var(--page-border);
+  text-wrap: balance;
 }
 
 /* Demo container */
@@ -95,14 +100,18 @@ body {
 }
 
 .code-block pre {
-  background: #0d0d0d;
+  background: var(--page-code-bg);
   border: 1px solid var(--page-border);
   padding: 20px 24px;
   overflow-x: auto;
   font-family: var(--page-mono);
   font-size: 13px;
   line-height: 1.6;
-  border-radius: 0;
+  border-radius: 8px;
+  /* make-interfaces-feel-better: shadow over border for depth */
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
 .code-block code {
@@ -113,9 +122,9 @@ body {
 .prose code {
   font-family: var(--page-mono);
   font-size: 0.875em;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.04);
   padding: 2px 6px;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 /* Toggle buttons (reused across sections) */
@@ -129,22 +138,36 @@ body {
   background: transparent;
   border: 1px solid var(--page-border);
   color: var(--page-text-muted);
-  padding: 4px 12px;
-  font-size: 11px;
+  padding: 6px 14px;
+  font-size: 12px;
   font-family: var(--page-font);
   cursor: pointer;
-  transition: border-color 150ms;
+  border-radius: 6px;
+  /* make-interfaces-feel-better: specific transition properties, not all */
+  transition-property: border-color, color, background-color, scale;
+  transition-duration: 150ms;
+  transition-timing-function: ease;
+  /* make-interfaces-feel-better: minimum hit area */
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
 }
 
 .toggle-btn:hover {
-  border-color: #333;
+  border-color: #d4d4d4;
   color: var(--page-text);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+/* make-interfaces-feel-better: scale on press */
+.toggle-btn:active {
+  scale: 0.96;
 }
 
 .toggle-btn-active {
-  border-color: #444;
+  border-color: var(--page-text);
   color: var(--page-text);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(0, 0, 0, 0.03);
 }
 
 /* Caption */
