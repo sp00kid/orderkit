@@ -1,0 +1,37 @@
+.hero {
+  padding: 120px 0 80px;
+}
+
+.title {
+  max-width: var(--page-demo-width);
+  margin: 0 auto 24px;
+  padding: 0 24px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--page-text-dim);
+}
+
+.demo {
+  max-width: var(--page-demo-width);
+  margin: 0 auto 48px;
+  padding: 0 24px;
+}
+
+.copy {
+  max-width: var(--page-prose-width);
+  margin: 0 auto;
+  padding: 0 24px;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--page-text-muted);
+}
+
+.copy p {
+  margin-bottom: 1em;
+}
+
+.copy p:last-child {
+  margin-bottom: 0;
+}
