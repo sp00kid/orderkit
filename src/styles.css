@@ -1,0 +1,198 @@
+/* orderkit – default styles */
+
+.ok-orderbook {
+  --ok-bg: #0a0a0a;
+  --ok-text: #d4d4d4;
+  --ok-text-muted: #525252;
+  --ok-border: #1a1a1a;
+  --ok-bid: #4ade80;
+  --ok-ask: #f87171;
+  --ok-bid-bar: rgba(74, 222, 128, 0.06);
+  --ok-ask-bar: rgba(248, 113, 113, 0.06);
+  --ok-flash-up: rgba(74, 222, 128, 0.08);
+  --ok-flash-down: rgba(248, 113, 113, 0.08);
+  --ok-spread-bg: rgba(255, 255, 255, 0.02);
+  --ok-font: "SF Mono", "Cascadia Mono", "Roboto Mono", "JetBrains Mono", ui-monospace, monospace;
+  --ok-font-size: 12px;
+  --ok-row-height: 24px;
+
+  font-family: var(--ok-font);
+  font-size: var(--ok-font-size);
+  font-variant-numeric: tabular-nums;
+  color: var(--ok-text);
+  background: var(--ok-bg);
+  border: 1px solid var(--ok-border);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Light theme */
+.ok-orderbook.ok-light {
+  --ok-bg: #fafafa;
+  --ok-text: #262626;
+  --ok-text-muted: #a3a3a3;
+  --ok-border: #e5e5e5;
+  --ok-bid: #16a34a;
+  --ok-ask: #dc2626;
+  --ok-bid-bar: rgba(22, 163, 74, 0.06);
+  --ok-ask-bar: rgba(220, 38, 38, 0.06);
+  --ok-flash-up: rgba(22, 163, 74, 0.08);
+  --ok-flash-down: rgba(220, 38, 38, 0.08);
+  --ok-spread-bg: rgba(0, 0, 0, 0.02);
+}
+
+/* Headers */
+.ok-headers {
+  display: flex;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--ok-border);
+  color: var(--ok-text-muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Body */
+.ok-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.ok-body-horizontal {
+  flex-direction: row;
+}
+
+.ok-body-horizontal .ok-side {
+  flex: 1;
+}
+
+.ok-body-horizontal .ok-asks {
+  border-right: 1px solid var(--ok-border);
+}
+
+/* Side containers */
+.ok-side {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* Asks push to bottom so spread stays centered */
+.ok-asks {
+  justify-content: flex-end;
+}
+
+/* Rows */
+.ok-row {
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: var(--ok-row-height);
+  padding: 0 16px;
+  transition: background-color 800ms ease-out;
+}
+
+.ok-row:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.ok-light .ok-row:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Depth bars — no transition, instant updates preserve monotonicity */
+.ok-depth-bar {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+[data-side="bid"] .ok-depth-bar {
+  background: var(--ok-bid-bar);
+  transform-origin: right;
+}
+
+[data-side="ask"] .ok-depth-bar {
+  background: var(--ok-ask-bar);
+  transform-origin: right;
+}
+
+/* Flash highlights — subtle and slow fade */
+.ok-row[data-flash="up"] {
+  background-color: var(--ok-flash-up);
+  transition: none;
+}
+
+.ok-row[data-flash="down"] {
+  background-color: var(--ok-flash-down);
+  transition: none;
+}
+
+/* Cells */
+.ok-cell {
+  position: relative;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ok-cell.ok-price {
+  flex: 2;
+}
+
+.ok-cell.ok-size {
+  flex: 3;
+}
+
+.ok-cell.ok-total {
+  flex: 2;
+}
+
+.ok-price {
+  color: var(--ok-text);
+}
+
+[data-side="bid"] .ok-price {
+  color: var(--ok-bid);
+}
+
+[data-side="ask"] .ok-price {
+  color: var(--ok-ask);
+}
+
+.ok-size {
+  color: var(--ok-text);
+}
+
+.ok-total {
+  color: var(--ok-text-muted);
+}
+
+/* Spread */
+.ok-spread {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 16px;
+  background: var(--ok-spread-bg);
+  border-top: 1px solid var(--ok-border);
+  border-bottom: 1px solid var(--ok-border);
+  font-size: 11px;
+}
+
+.ok-spread-value {
+  color: var(--ok-text);
+  font-weight: 500;
+}
+
+.ok-spread-percent {
+  color: var(--ok-text-muted);
+}
