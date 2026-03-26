@@ -48,6 +48,6 @@
     "test:run": "vitest run",
     "demo": "vite --config demo/vite.config.ts",
     "type-check": "tsc --noEmit",
-    "prepublishOnly": "pnpm build"
+    "prepublishOnly": "npm run build"
   }
 }
