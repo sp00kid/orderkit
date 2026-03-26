@@ -1,81 +1,74 @@
 .hero {
-  padding: 100px 0 80px;
+  padding: 80px 0 60px;
 }
 
 .header {
-  max-width: var(--page-prose-width);
-  margin: 0 auto 8px;
+  max-width: var(--page-width);
+  margin: 0 auto 0;
   padding: 0 24px;
 }
 
 .title {
-  font-size: 24px;
-  font-weight: 500;
+  font-size: 22px;
+  font-weight: 400;
   color: var(--page-text);
-  text-wrap: balance;
+  letter-spacing: -0.01em;
 }
 
-.subtitle {
+.date {
   font-size: 14px;
   color: var(--page-text-dim);
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 .intro {
-  max-width: var(--page-prose-width);
-  margin: 0 auto 40px;
+  max-width: var(--page-width);
+  margin: 28px auto 48px;
   padding: 0 24px;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.7;
   color: var(--page-text-muted);
   text-wrap: pretty;
 }
 
-.intro code {
-  font-family: var(--page-mono);
-  font-size: 0.875em;
-  background: rgba(0, 0, 0, 0.04);
-  padding: 2px 6px;
-  border-radius: 3px;
-}
-
 .demo {
-  max-width: var(--page-demo-width);
-  margin: 0 auto 12px;
+  max-width: var(--page-width);
+  margin: 0 auto 8px;
   padding: 0 24px;
 }
 
-/* make-interfaces-feel-better: layered shadow for depth */
+/* Layered shadows for depth — concentric radius with padding */
 .demo :global(.ok-orderbook) {
   border-radius: 10px;
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.06),
-    0 4px 16px rgba(0, 0, 0, 0.04),
-    0 0 0 1px rgba(0, 0, 0, 0.04);
   border: none;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.04),
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 4px 16px rgba(0, 0, 0, 0.03);
 }
 
 .caption {
-  max-width: var(--page-demo-width);
-  margin: 0 auto 48px;
+  max-width: var(--page-width);
+  margin: 0 auto 56px;
   padding: 0 24px;
   text-align: center;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--page-text-dim);
+  font-style: italic;
 }
 
 .copy {
-  max-width: var(--page-prose-width);
+  max-width: var(--page-width);
   margin: 0 auto;
   padding: 0 24px;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.7;
   color: var(--page-text-muted);
   text-wrap: pretty;
 }
 
 .copy p {
-  margin-bottom: 1em;
+  margin-bottom: 1.1em;
 }
 
 .copy p:last-child {

@@ -46,7 +46,7 @@ export default function Hero() {
     <section className={styles.hero}>
       <div className={styles.header}>
         <h1 className={styles.title}>orderkit</h1>
-        <p className={styles.subtitle}>March 2026</p>
+        <p className={styles.date}>March 2026</p>
       </div>
       <div className={styles.intro}>
         <p>
