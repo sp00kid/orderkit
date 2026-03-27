@@ -1,6 +1,7 @@
 import { useMemo, useEffect, useLayoutEffect, useRef, useState, useCallback } from "react";
 import type { OrderbookProps, ProcessedLevel } from "./types";
 import { OrderbookRow } from "./OrderbookRow";
+import { Skeleton } from "./Skeleton";
 import { useFlash } from "./useFlash";
 import {
   defaultFormatPrice,
@@ -165,6 +166,7 @@ export function Orderbook({
     setLocked(true);
   }, []);
 
+  const isEmpty = smoothedAsks.length === 0 && smoothedBids.length === 0;
   const isHorizontal = layout === "horizontal";
   const ROW_HEIGHT = 24;
   const HEADER_HEIGHT = showHeaders ? 29 : 0;
@@ -274,23 +276,25 @@ export function Orderbook({
 
       <div className={`ok-body ${isHorizontal ? "ok-body-horizontal" : ""}`}>
         <div className="ok-side ok-asks" style={{ height: sideHeight }}>
-          {smoothedAsks.map((level) => (
-            <OrderbookRow
-              key={level.price}
-              level={level}
-              flash={flash.getFlash(level.price, level.size)}
-              formatPrice={formatPrice}
-              formatSize={formatSize}
-              onPriceClick={onPriceClick}
-            />
-          ))}
+          {isEmpty ? (
+            <Skeleton rows={depth} />
+          ) : (
+            smoothedAsks.map((level) => (
+              <OrderbookRow
+                key={level.price}
+                level={level}
+                flash={flash.getFlash(level.price, level.size)}
+                formatPrice={formatPrice}
+                formatSize={formatSize}
+                onPriceClick={onPriceClick}
+              />
+            ))
+          )}
         </div>
 
         {spread !== null && (
           <div className="ok-spread">
-            {spread === "empty" ? (
-              <span className="ok-spread-value">&mdash;</span>
-            ) : spread === "crossed" ? (
+            {spread === "empty" || spread === "crossed" ? (
               <span className="ok-spread-value">&mdash;</span>
             ) : (
               <>
@@ -306,16 +310,20 @@ export function Orderbook({
         )}
 
         <div className="ok-side ok-bids" style={{ height: sideHeight }}>
-          {smoothedBids.map((level) => (
-            <OrderbookRow
-              key={level.price}
-              level={level}
-              flash={flash.getFlash(level.price, level.size)}
-              formatPrice={formatPrice}
-              formatSize={formatSize}
-              onPriceClick={onPriceClick}
-            />
-          ))}
+          {isEmpty ? (
+            <Skeleton rows={depth} />
+          ) : (
+            smoothedBids.map((level) => (
+              <OrderbookRow
+                key={level.price}
+                level={level}
+                flash={flash.getFlash(level.price, level.size)}
+                formatPrice={formatPrice}
+                formatSize={formatSize}
+                onPriceClick={onPriceClick}
+              />
+            ))
+          )}
         </div>
       </div>
     </div>

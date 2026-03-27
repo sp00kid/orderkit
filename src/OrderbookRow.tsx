@@ -52,7 +52,7 @@ export const OrderbookRow = memo(
         />
         <span className="ok-cell ok-price">{formatPrice(level.price)}</span>
         <span className="ok-cell ok-size">{formatSize(level.size)}</span>
-        <span className="ok-cell ok-total">{formatSize(level.total)}</span>
+        <span className="ok-cell ok-total" data-pct={`${(level.depth * 100).toFixed(0)}%`}>{formatSize(level.total)}</span>
       </div>
     );
   },

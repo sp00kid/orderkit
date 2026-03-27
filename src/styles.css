@@ -1,17 +1,19 @@
 /* orderkit – default styles */
 
 .ok-orderbook {
-  --ok-bg: #0a0a0a;
-  --ok-text: #d4d4d4;
-  --ok-text-muted: #525252;
-  --ok-border: #1a1a1a;
-  --ok-bid: #4ade80;
-  --ok-ask: #f87171;
-  --ok-bid-bar: rgba(74, 222, 128, 0.06);
-  --ok-ask-bar: rgba(248, 113, 113, 0.06);
-  --ok-flash-up: rgba(74, 222, 128, 0.08);
-  --ok-flash-down: rgba(248, 113, 113, 0.08);
+  --ok-bg: #0b0e11;
+  --ok-text: #eaecef;
+  --ok-text-muted: #5e6673;
+  --ok-border: #1e2329;
+  --ok-bid: #0ecb81;
+  --ok-ask: #f6465d;
+  --ok-bid-bar: rgba(14, 203, 129, 0.08);
+  --ok-ask-bar: rgba(246, 70, 93, 0.08);
+  --ok-flash-up: rgba(14, 203, 129, 0.12);
+  --ok-flash-down: rgba(246, 70, 93, 0.12);
   --ok-spread-bg: rgba(255, 255, 255, 0.02);
+  --ok-skeleton: rgba(255, 255, 255, 0.04);
+  --ok-hover: rgba(255, 255, 255, 0.03);
   --ok-font: "SF Mono", "Cascadia Mono", "Roboto Mono", "JetBrains Mono", ui-monospace, monospace;
   --ok-font-size: 12px;
   --ok-row-height: 24px;
@@ -34,16 +36,18 @@
 /* Light theme */
 .ok-orderbook.ok-light {
   --ok-bg: #fafafa;
-  --ok-text: #262626;
-  --ok-text-muted: #a3a3a3;
-  --ok-border: #e5e5e5;
-  --ok-bid: #16a34a;
-  --ok-ask: #dc2626;
-  --ok-bid-bar: rgba(22, 163, 74, 0.06);
-  --ok-ask-bar: rgba(220, 38, 38, 0.06);
-  --ok-flash-up: rgba(22, 163, 74, 0.08);
-  --ok-flash-down: rgba(220, 38, 38, 0.08);
-  --ok-spread-bg: rgba(0, 0, 0, 0.02);
+  --ok-text: #1e2329;
+  --ok-text-muted: #9ca3af;
+  --ok-border: #eaecef;
+  --ok-bid: #0b9e5e;
+  --ok-ask: #cf304a;
+  --ok-bid-bar: rgba(11, 158, 94, 0.06);
+  --ok-ask-bar: rgba(207, 48, 74, 0.06);
+  --ok-flash-up: rgba(11, 158, 94, 0.10);
+  --ok-flash-down: rgba(207, 48, 74, 0.10);
+  --ok-spread-bg: rgba(0, 0, 0, 0.015);
+  --ok-skeleton: rgba(0, 0, 0, 0.04);
+  --ok-hover: rgba(0, 0, 0, 0.02);
 }
 
 /* Headers */
@@ -99,11 +103,12 @@
 }
 
 .ok-row:hover {
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: var(--ok-hover);
 }
 
-.ok-light .ok-row:hover {
-  background-color: rgba(0, 0, 0, 0.02);
+/* Brighter depth bar on hover */
+.ok-row:hover .ok-depth-bar {
+  opacity: 1.8;
 }
 
 /* Depth bars — no transition, instant updates preserve monotonicity */
@@ -269,4 +274,55 @@
 
 .ok-relock:active {
   scale: 0.96;
+}
+
+/* Skeleton loading state */
+@keyframes ok-shimmer {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
+
+.ok-skeleton-row {
+  display: flex;
+  align-items: center;
+  height: var(--ok-row-height);
+  padding: 0 16px;
+  gap: 12px;
+}
+
+.ok-skeleton-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--ok-skeleton);
+  animation: ok-shimmer 1.8s ease-in-out infinite;
+}
+
+.ok-skeleton-bar:nth-child(1) { flex: 2; }
+.ok-skeleton-bar:nth-child(2) { flex: 3; }
+.ok-skeleton-bar:nth-child(3) { flex: 2; }
+
+/* Stagger the shimmer for each row */
+.ok-skeleton-row:nth-child(2) .ok-skeleton-bar { animation-delay: 0.1s; }
+.ok-skeleton-row:nth-child(3) .ok-skeleton-bar { animation-delay: 0.2s; }
+.ok-skeleton-row:nth-child(4) .ok-skeleton-bar { animation-delay: 0.3s; }
+.ok-skeleton-row:nth-child(5) .ok-skeleton-bar { animation-delay: 0.4s; }
+.ok-skeleton-row:nth-child(6) .ok-skeleton-bar { animation-delay: 0.5s; }
+.ok-skeleton-row:nth-child(7) .ok-skeleton-bar { animation-delay: 0.6s; }
+.ok-skeleton-row:nth-child(8) .ok-skeleton-bar { animation-delay: 0.7s; }
+.ok-skeleton-row:nth-child(9) .ok-skeleton-bar { animation-delay: 0.8s; }
+.ok-skeleton-row:nth-child(10) .ok-skeleton-bar { animation-delay: 0.9s; }
+
+/* Cumulative percentage on hover */
+.ok-row:hover .ok-total::after {
+  content: attr(data-pct);
+  position: absolute;
+  right: -4px;
+  top: 50%;
+  transform: translateY(-50%) translateX(100%);
+  font-size: 9px;
+  color: var(--ok-text-muted);
+  padding: 1px 4px;
+  white-space: nowrap;
+  pointer-events: none;
 }
