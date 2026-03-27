@@ -48,6 +48,7 @@ export function Orderbook({
   depthMode = "cumulative",
   layout = "vertical",
   scrollLock: scrollLockProp = false,
+  lastPrice,
   onPriceClick,
   formatPrice = defaultFormatPrice,
   formatSize = defaultFormatSize,
@@ -98,7 +99,20 @@ export function Orderbook({
     return applyDepthMode(processedBids, depthMode, bidSmootherRef.current);
   }, [processedBids, depthMode]);
 
-  const spread = useMemo((): { value: number; percent: number } | "empty" | "crossed" | null => {
+  // Track last price direction
+  const prevLastPriceRef = useRef<number | undefined>(undefined);
+  const priceDirection = useMemo((): "up" | "down" | null => {
+    if (lastPrice === undefined || prevLastPriceRef.current === undefined) return null;
+    if (lastPrice > prevLastPriceRef.current) return "up";
+    if (lastPrice < prevLastPriceRef.current) return "down";
+    return null;
+  }, [lastPrice]);
+
+  useEffect(() => {
+    prevLastPriceRef.current = lastPrice;
+  }, [lastPrice]);
+
+  const spread = useMemo((): { value: number; percent: number; mid: number } | "empty" | "crossed" | null => {
     if (!showSpread) return null;
 
     if (smoothedAsks.length === 0 || smoothedBids.length === 0) return "empty";
@@ -112,7 +126,7 @@ export function Orderbook({
     const mid = (lowestAsk + highestBid) / 2;
     const percent = mid > 0 ? (value / mid) * 100 : 0;
 
-    return { value, percent };
+    return { value, percent, mid };
   }, [smoothedAsks, smoothedBids, showSpread]);
 
   useEffect(() => {
@@ -169,6 +183,31 @@ export function Orderbook({
   const isEmpty = smoothedAsks.length === 0 && smoothedBids.length === 0;
   const isHorizontal = layout === "horizontal";
   const ROW_HEIGHT = 24;
+
+  // Shared spread row content
+  const spreadContent = spread === null ? null : spread === "empty" || spread === "crossed" ? (
+    <span className="ok-spread-value">&mdash;</span>
+  ) : (
+    <>
+      {lastPrice !== undefined && priceDirection && (
+        <span className={`ok-spread-arrow ok-spread-arrow-${priceDirection}`}>
+          {priceDirection === "up" ? "\u25B2" : "\u25BC"}
+        </span>
+      )}
+      {lastPrice !== undefined ? (
+        <span className={`ok-spread-last ${priceDirection ? `ok-spread-last-${priceDirection}` : ""}`}>
+          {formatPrice(lastPrice)}
+        </span>
+      ) : (
+        <span className="ok-spread-value">
+          {formatPrice(spread.mid)}
+        </span>
+      )}
+      <span className="ok-spread-percent">
+        {formatPrice(spread.value)} ({spread.percent.toFixed(2)}%)
+      </span>
+    </>
+  );
   const HEADER_HEIGHT = showHeaders ? 29 : 0;
   const SPREAD_HEIGHT = showSpread ? 32 : 0;
 
@@ -216,20 +255,7 @@ export function Orderbook({
 
           {spread !== null && (
             <div className="ok-spread" ref={spreadRef}>
-              {spread === "empty" ? (
-                <span className="ok-spread-value">&mdash;</span>
-              ) : spread === "crossed" ? (
-                <span className="ok-spread-value">&mdash;</span>
-              ) : (
-                <>
-                  <span className="ok-spread-value">
-                    {formatPrice(spread.value)}
-                  </span>
-                  <span className="ok-spread-percent">
-                    ({spread.percent.toFixed(2)}%)
-                  </span>
-                </>
-              )}
+              {spreadContent}
             </div>
           )}
 
@@ -294,18 +320,7 @@ export function Orderbook({
 
         {spread !== null && (
           <div className="ok-spread">
-            {spread === "empty" || spread === "crossed" ? (
-              <span className="ok-spread-value">&mdash;</span>
-            ) : (
-              <>
-                <span className="ok-spread-value">
-                  {formatPrice(spread.value)}
-                </span>
-                <span className="ok-spread-percent">
-                  ({spread.percent.toFixed(2)}%)
-                </span>
-              </>
-            )}
+            {spreadContent}
           </div>
         )}
 

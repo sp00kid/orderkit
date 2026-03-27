@@ -203,6 +203,34 @@
   color: var(--ok-text-muted);
 }
 
+/* Last price + direction arrow */
+.ok-spread-arrow {
+  font-size: 8px;
+  line-height: 1;
+}
+
+.ok-spread-arrow-up {
+  color: var(--ok-bid);
+}
+
+.ok-spread-arrow-down {
+  color: var(--ok-ask);
+}
+
+.ok-spread-last {
+  color: var(--ok-text);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.ok-spread-last-up {
+  color: var(--ok-bid);
+}
+
+.ok-spread-last-down {
+  color: var(--ok-ask);
+}
+
 /* Scrollable body */
 .ok-body-scrollable {
   scrollbar-width: thin;
@@ -274,6 +302,23 @@
 
 .ok-relock:active {
   scale: 0.96;
+}
+
+/* Responsive: tighter on small screens */
+@media (max-width: 480px) {
+  .ok-orderbook {
+    --ok-font-size: 11px;
+    --ok-row-height: 28px;
+  }
+  .ok-row {
+    padding: 0 12px;
+  }
+  .ok-headers {
+    padding: 6px 12px;
+  }
+  .ok-spread {
+    padding: 0 12px;
+  }
 }
 
 /* Skeleton loading state */

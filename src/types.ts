@@ -34,6 +34,8 @@ export interface OrderbookProps {
   layout?: "vertical" | "horizontal";
   /** Enable scrollable book with spread locked to center. When true, depth controls visible window height but all levels render. */
   scrollLock?: boolean;
+  /** Last traded price — used to show mid-market and direction arrow in spread row */
+  lastPrice?: number;
   /** Callback when a price row is clicked */
   onPriceClick?: (price: number, side: "bid" | "ask") => void;
   /** Container class */
