@@ -119,22 +119,38 @@ export function Orderbook({
   });
 
   // ── Scroll lock: center spread before paint ──
+  // Runs on every render when locked. Uses getBoundingClientRect for
+  // robust positioning regardless of offsetParent chain.
+  // Depends on smoothedAsks/smoothedBids to re-run when data changes.
   useLayoutEffect(() => {
     if (!scrollLockProp || !locked) return;
-    if (!scrollRef.current || !spreadRef.current) return;
 
     const container = scrollRef.current;
     const spreadEl = spreadRef.current;
+    if (!container || !spreadEl) return;
+
+    // If content fits within the container, no scroll needed —
+    // the flex layout centers the spread naturally
+    if (container.scrollHeight <= container.clientHeight) return;
+
+    // Position of spread within the scroll content
+    const spreadOffsetInContent =
+      spreadEl.getBoundingClientRect().top -
+      container.getBoundingClientRect().top +
+      container.scrollTop;
 
     const target =
-      spreadEl.offsetTop -
+      spreadOffsetInContent -
       container.clientHeight / 2 +
       spreadEl.clientHeight / 2;
 
     isAdjustingRef.current = true;
     container.scrollTop = target;
-    isAdjustingRef.current = false;
-  });
+    // Clear flag asynchronously so the scroll event handler sees it
+    requestAnimationFrame(() => {
+      isAdjustingRef.current = false;
+    });
+  }, [scrollLockProp, locked, smoothedAsks, smoothedBids]);
 
   // ── Scroll handler: detect user scroll to unlock ──
   const handleScroll = useCallback(() => {

@@ -217,15 +217,18 @@
   border-radius: 2px;
 }
 
-/* In scroll mode, sides don't have fixed height — they grow with content */
+/* In scroll mode, sides grow with content but have a min-height
+   so spread stays centered when content is shorter than viewport */
 .ok-body-scrollable .ok-side {
   overflow: visible;
   height: auto !important;
+  min-height: 50%;
 }
 
-/* Asks don't need flex-end in scroll mode — they flow naturally */
+/* In scroll mode, asks still push to bottom for natural centering
+   when content is shorter than the viewport */
 .ok-body-scrollable .ok-asks {
-  justify-content: flex-start;
+  justify-content: flex-end;
 }
 
 /* Clickable rows */
