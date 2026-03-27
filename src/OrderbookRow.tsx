@@ -1,4 +1,4 @@
-import { memo, useRef, useEffect } from "react";
+import { memo, useRef, useEffect, useCallback } from "react";
 import type { ProcessedLevel } from "./types";
 
 interface OrderbookRowProps {
@@ -6,13 +6,12 @@ interface OrderbookRowProps {
   flash: "up" | "down" | null;
   formatPrice: (price: number) => string;
   formatSize: (size: number) => string;
+  onPriceClick?: (price: number, side: "bid" | "ask") => void;
 }
 
 export const OrderbookRow = memo(
-  function OrderbookRow({ level, flash, formatPrice, formatSize }: OrderbookRowProps) {
+  function OrderbookRow({ level, flash, formatPrice, formatSize, onPriceClick }: OrderbookRowProps) {
     const rowRef = useRef<HTMLDivElement>(null);
-    // Store timer ID in a ref so it persists across renders
-    // without being tied to useEffect cleanup
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
@@ -20,33 +19,32 @@ export const OrderbookRow = memo(
 
       const el = rowRef.current;
 
-      // Clear any existing timer — we're starting a fresh flash
       if (timerRef.current) clearTimeout(timerRef.current);
 
-      // Apply flash instantly
       el.setAttribute("data-flash", flash);
 
-      // Schedule removal — NOT in the cleanup function
       timerRef.current = setTimeout(() => {
         el.removeAttribute("data-flash");
         timerRef.current = null;
       }, 120);
-
-      // No cleanup — the timeout manages itself via ref
     }, [flash, level.size]);
 
-    // Cleanup only on unmount
     useEffect(() => {
       return () => {
         if (timerRef.current) clearTimeout(timerRef.current);
       };
     }, []);
 
+    const handleClick = useCallback(() => {
+      onPriceClick?.(level.price, level.side);
+    }, [onPriceClick, level.price, level.side]);
+
     return (
       <div
         ref={rowRef}
-        className="ok-row"
+        className={`ok-row${onPriceClick ? " ok-row-clickable" : ""}`}
         data-side={level.side}
+        onClick={onPriceClick ? handleClick : undefined}
       >
         <div
           className="ok-depth-bar"
@@ -62,5 +60,6 @@ export const OrderbookRow = memo(
     prev.level.price === next.level.price &&
     prev.level.size === next.level.size &&
     prev.level.total === next.level.total &&
-    prev.flash === next.flash
+    prev.flash === next.flash &&
+    prev.onPriceClick === next.onPriceClick
 );

@@ -447,6 +447,7 @@ function App() {
   const [layout, setLayout] = useState<"vertical" | "horizontal">("vertical");
   const [depthMode, setDepthMode] = useState<"cumulative" | "level">("level");
   const [depth, setDepth] = useState(10);
+  const [scrollLock, setScrollLock] = useState(false);
   const [source, setSource] = useState<DataSource>("prediction");
   const [edgeCase, setEdgeCase] = useState<string>("empty");
   const [predBook, setPredBook] = useState<{ bids: OrderbookLevel[]; asks: OrderbookLevel[] }>({
@@ -690,6 +691,14 @@ function App() {
             ))}
           </div>
         </div>
+
+        <div className="demo-section">
+          <span className="demo-label">Scroll Lock</span>
+          <div className="controls">
+            <button className={scrollLock ? "active" : ""} onClick={() => setScrollLock(true)}>On</button>
+            <button className={!scrollLock ? "active" : ""} onClick={() => setScrollLock(false)}>Off</button>
+          </div>
+        </div>
       </div>
 
       <div className="demo-main">
@@ -701,6 +710,8 @@ function App() {
           depth={depth}
           highlightChanges={true}
           depthMode={depthMode}
+          scrollLock={scrollLock}
+          onPriceClick={(price, side) => console.log(`[orderkit] clicked ${side} @ ${price}`)}
           formatPrice={formatPrice}
           formatSize={formatSize}
         />

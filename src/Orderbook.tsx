@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useRef } from "react";
+import { useMemo, useEffect, useLayoutEffect, useRef, useState, useCallback } from "react";
 import type { OrderbookProps, ProcessedLevel } from "./types";
 import { OrderbookRow } from "./OrderbookRow";
 import { useFlash } from "./useFlash";
@@ -19,7 +19,6 @@ function applyDepthMode(
   if (levels.length === 0) return [];
 
   if (mode === "level") {
-    // Per-level: depth = this level's size / max size across all visible levels
     const maxSize = Math.max(...levels.map((l) => l.size));
     const smoothMax = smoother(maxSize);
     return levels.map((level) => ({
@@ -28,7 +27,6 @@ function applyDepthMode(
     }));
   }
 
-  // Cumulative: depth = cumulative total / max cumulative total
   const rawMax = levels[levels.length - 1]?.total ?? 0;
   const smoothMax = smoother(rawMax);
   return levels.map((level) => ({
@@ -48,6 +46,8 @@ export function Orderbook({
   highlightChanges = true,
   depthMode = "cumulative",
   layout = "vertical",
+  scrollLock: scrollLockProp = false,
+  onPriceClick,
   formatPrice = defaultFormatPrice,
   formatSize = defaultFormatSize,
   className,
@@ -57,27 +57,41 @@ export function Orderbook({
   const askSmootherRef = useRef(createMaxTotalSmoother());
   const bidSmootherRef = useRef(createMaxTotalSmoother());
 
-  // Start a new flash cycle for this render
+  // Scroll lock state
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const spreadRef = useRef<HTMLDivElement>(null);
+  const isAdjustingRef = useRef(false);
+  const [locked, setLocked] = useState(scrollLockProp);
+
+  // Sync prop changes
+  useEffect(() => {
+    setLocked(scrollLockProp);
+  }, [scrollLockProp]);
+
   flash.startCycle();
+
+  // In scroll lock mode, process ALL levels (no depth cap)
+  // In normal mode, cap at depth
+  const maxLevels = scrollLockProp ? Infinity : depth;
 
   const processedAsks = useMemo(() => {
     const clean = sanitizeLevels(asks);
     const aggregated = aggregateLevels(clean, grouping);
     const sorted = [...aggregated].sort((a, b) => a.price - b.price);
-    return processLevels(sorted, "ask", depth);
-  }, [asks, grouping, depth]);
+    return processLevels(sorted, "ask", maxLevels);
+  }, [asks, grouping, maxLevels]);
 
   const smoothedAsks = useMemo(() => {
     const withDepth = applyDepthMode(processedAsks, depthMode, askSmootherRef.current);
-    return withDepth.reverse(); // highest ask at top
+    return withDepth.reverse();
   }, [processedAsks, depthMode]);
 
   const processedBids = useMemo(() => {
     const clean = sanitizeLevels(bids);
     const aggregated = aggregateLevels(clean, grouping);
     const sorted = [...aggregated].sort((a, b) => b.price - a.price);
-    return processLevels(sorted, "bid", depth);
-  }, [bids, grouping, depth]);
+    return processLevels(sorted, "bid", maxLevels);
+  }, [bids, grouping, maxLevels]);
 
   const smoothedBids = useMemo(() => {
     return applyDepthMode(processedBids, depthMode, bidSmootherRef.current);
@@ -100,17 +114,132 @@ export function Orderbook({
     return { value, percent };
   }, [smoothedAsks, smoothedBids, showSpread]);
 
-  // Clean up stale flash entries after render
   useEffect(() => {
     flash.endCycle();
   });
 
-  const isHorizontal = layout === "horizontal";
+  // ── Scroll lock: center spread before paint ──
+  useLayoutEffect(() => {
+    if (!scrollLockProp || !locked) return;
+    if (!scrollRef.current || !spreadRef.current) return;
 
-  // Lock min-height so the container never collapses on data loss.
+    const container = scrollRef.current;
+    const spreadEl = spreadRef.current;
+
+    const target =
+      spreadEl.offsetTop -
+      container.clientHeight / 2 +
+      spreadEl.clientHeight / 2;
+
+    isAdjustingRef.current = true;
+    container.scrollTop = target;
+    isAdjustingRef.current = false;
+  });
+
+  // ── Scroll handler: detect user scroll to unlock ──
+  const handleScroll = useCallback(() => {
+    if (isAdjustingRef.current) return; // programmatic scroll, ignore
+    if (!scrollLockProp) return;
+    // User scrolled — unlock
+    setLocked(false);
+  }, [scrollLockProp]);
+
+  // Re-lock function
+  const handleRelock = useCallback(() => {
+    setLocked(true);
+  }, []);
+
+  const isHorizontal = layout === "horizontal";
   const ROW_HEIGHT = 24;
   const HEADER_HEIGHT = showHeaders ? 29 : 0;
   const SPREAD_HEIGHT = showSpread ? 32 : 0;
+
+  if (scrollLockProp) {
+    // Scroll lock mode: fixed container height, scrollable content
+    const visibleHeight = depth * ROW_HEIGHT * 2 + SPREAD_HEIGHT;
+    const totalHeight = HEADER_HEIGHT + visibleHeight;
+
+    return (
+      <div
+        className={`ok-orderbook ${isHorizontal ? "ok-horizontal" : "ok-vertical"} ok-${theme}${className ? ` ${className}` : ""}`}
+        style={{ height: totalHeight, ...style }}
+      >
+        {showHeaders && (
+          <div className="ok-headers">
+            <span className="ok-cell ok-price">Price</span>
+            <span className="ok-cell ok-size">Size</span>
+            <span className="ok-cell ok-total">Total</span>
+          </div>
+        )}
+
+        <div
+          ref={scrollRef}
+          className={`ok-body ok-body-scrollable ${isHorizontal ? "ok-body-horizontal" : ""}`}
+          style={{
+            height: visibleHeight,
+            overflowY: "auto",
+            scrollBehavior: "auto",
+            overflowAnchor: "none",
+          }}
+          onScroll={handleScroll}
+        >
+          <div className="ok-side ok-asks">
+            {smoothedAsks.map((level) => (
+              <OrderbookRow
+                key={level.price}
+                level={level}
+                flash={flash.getFlash(level.price, level.size)}
+                formatPrice={formatPrice}
+                formatSize={formatSize}
+                onPriceClick={onPriceClick}
+              />
+            ))}
+          </div>
+
+          {spread !== null && (
+            <div className="ok-spread" ref={spreadRef}>
+              {spread === "empty" ? (
+                <span className="ok-spread-value">&mdash;</span>
+              ) : spread === "crossed" ? (
+                <span className="ok-spread-value">&mdash;</span>
+              ) : (
+                <>
+                  <span className="ok-spread-value">
+                    {formatPrice(spread.value)}
+                  </span>
+                  <span className="ok-spread-percent">
+                    ({spread.percent.toFixed(2)}%)
+                  </span>
+                </>
+              )}
+            </div>
+          )}
+
+          <div className="ok-side ok-bids">
+            {smoothedBids.map((level) => (
+              <OrderbookRow
+                key={level.price}
+                level={level}
+                flash={flash.getFlash(level.price, level.size)}
+                formatPrice={formatPrice}
+                formatSize={formatSize}
+                onPriceClick={onPriceClick}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Re-lock button when user has scrolled away */}
+        {!locked && (
+          <button className="ok-relock" onClick={handleRelock}>
+            Center spread
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  // ── Normal mode (no scroll lock) ──
   const sideHeight = depth * ROW_HEIGHT;
   const minHeight = HEADER_HEIGHT + sideHeight * 2 + SPREAD_HEIGHT;
 
@@ -136,6 +265,7 @@ export function Orderbook({
               flash={flash.getFlash(level.price, level.size)}
               formatPrice={formatPrice}
               formatSize={formatSize}
+              onPriceClick={onPriceClick}
             />
           ))}
         </div>
@@ -143,9 +273,9 @@ export function Orderbook({
         {spread !== null && (
           <div className="ok-spread">
             {spread === "empty" ? (
-              <span className="ok-spread-value">—</span>
+              <span className="ok-spread-value">&mdash;</span>
             ) : spread === "crossed" ? (
-              <span className="ok-spread-value">—</span>
+              <span className="ok-spread-value">&mdash;</span>
             ) : (
               <>
                 <span className="ok-spread-value">
@@ -167,6 +297,7 @@ export function Orderbook({
               flash={flash.getFlash(level.price, level.size)}
               formatPrice={formatPrice}
               formatSize={formatSize}
+              onPriceClick={onPriceClick}
             />
           ))}
         </div>

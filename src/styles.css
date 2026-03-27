@@ -22,6 +22,7 @@
   color: var(--ok-text);
   background: var(--ok-bg);
   border: 1px solid var(--ok-border);
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -195,4 +196,74 @@
 
 .ok-spread-percent {
   color: var(--ok-text-muted);
+}
+
+/* Scrollable body */
+.ok-body-scrollable {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(128, 128, 128, 0.2) transparent;
+}
+
+.ok-body-scrollable::-webkit-scrollbar {
+  width: 4px;
+}
+
+.ok-body-scrollable::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ok-body-scrollable::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.2);
+  border-radius: 2px;
+}
+
+/* In scroll mode, sides don't have fixed height — they grow with content */
+.ok-body-scrollable .ok-side {
+  overflow: visible;
+  height: auto !important;
+}
+
+/* Asks don't need flex-end in scroll mode — they flow naturally */
+.ok-body-scrollable .ok-asks {
+  justify-content: flex-start;
+}
+
+/* Clickable rows */
+.ok-row-clickable {
+  cursor: pointer;
+}
+
+.ok-row-clickable:active {
+  background-color: rgba(128, 128, 128, 0.08);
+}
+
+/* Re-lock button */
+.ok-relock {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ok-bg);
+  border: 1px solid var(--ok-border);
+  color: var(--ok-text-muted);
+  padding: 4px 12px;
+  font-size: 10px;
+  font-family: var(--ok-font);
+  cursor: pointer;
+  border-radius: 12px;
+  z-index: 1;
+  transition-property: border-color, color, scale;
+  transition-duration: 150ms;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.ok-relock:hover {
+  border-color: var(--ok-text-muted);
+  color: var(--ok-text);
+}
+
+.ok-relock:active {
+  scale: 0.96;
 }

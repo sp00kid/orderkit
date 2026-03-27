@@ -32,6 +32,10 @@ export interface OrderbookProps {
   depthMode?: "cumulative" | "level";
   /** Vertical = asks on top, bids below. Horizontal = side by side */
   layout?: "vertical" | "horizontal";
+  /** Enable scrollable book with spread locked to center. When true, depth controls visible window height but all levels render. */
+  scrollLock?: boolean;
+  /** Callback when a price row is clicked */
+  onPriceClick?: (price: number, side: "bid" | "ask") => void;
   /** Container class */
   className?: string;
   /** Container styles */
