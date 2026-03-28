@@ -447,7 +447,7 @@ function App() {
   const [layout, setLayout] = useState<"vertical" | "horizontal">("vertical");
   const [depthMode, setDepthMode] = useState<"cumulative" | "level">("level");
   const [depth, setDepth] = useState(10);
-  const [scrollLock, setScrollLock] = useState(false);
+  const [scrollLock, setScrollLock] = useState(true);
   const [source, setSource] = useState<DataSource>("prediction");
   const [edgeCase, setEdgeCase] = useState<string>("empty");
   const [predBook, setPredBook] = useState<{ bids: OrderbookLevel[]; asks: OrderbookLevel[] }>({

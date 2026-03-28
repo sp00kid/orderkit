@@ -291,13 +291,12 @@
   border-radius: 2px;
 }
 
-/* In scroll mode, sides grow with content but have a min-height
-   so spread stays centered when content is shorter than viewport.
+/* In scroll mode, sides grow naturally with content.
    Row height stays consistent via --ok-row-height (same as normal mode). */
 .ok-body-scrollable .ok-side {
   overflow: visible;
   height: auto;
-  min-height: 50%;
+  flex-shrink: 0;
 }
 
 /* In scroll mode, asks still push to bottom for natural centering
