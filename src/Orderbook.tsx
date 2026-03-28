@@ -47,7 +47,7 @@ export function Orderbook({
   highlightChanges = true,
   depthMode = "cumulative",
   layout = "vertical",
-  scrollLock: scrollLockProp = false,
+  scrollLock: scrollLockProp = true,
   lastPrice,
   onPriceClick,
   formatPrice = defaultFormatPrice,

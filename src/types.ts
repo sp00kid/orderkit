@@ -32,7 +32,7 @@ export interface OrderbookProps {
   depthMode?: "cumulative" | "level";
   /** Vertical = asks on top, bids below. Horizontal = side by side */
   layout?: "vertical" | "horizontal";
-  /** Enable scrollable book with spread locked to center. When true, depth controls visible window height but all levels render. */
+  /** Scrollable book with spread locked to center. When true (default), depth controls visible window height but all levels render. Set false for fixed-depth mode. */
   scrollLock?: boolean;
   /** Last traded price — used to show mid-market and direction arrow in spread row */
   lastPrice?: number;

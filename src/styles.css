@@ -222,8 +222,8 @@
    outer (.ok-spread-arrow) handles rotation via CSS transition
    inner (.ok-spread-arrow-motion) handles continuous bounce via CSS animation */
 @keyframes ok-arrow-bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
+  0%, 100% { transform: translateY(1.5px); }
+  50% { transform: translateY(-1.5px); }
 }
 
 .ok-spread-arrow {
@@ -292,10 +292,11 @@
 }
 
 /* In scroll mode, sides grow with content but have a min-height
-   so spread stays centered when content is shorter than viewport */
+   so spread stays centered when content is shorter than viewport.
+   Row height stays consistent via --ok-row-height (same as normal mode). */
 .ok-body-scrollable .ok-side {
   overflow: visible;
-  height: auto !important;
+  height: auto;
   min-height: 50%;
 }
 
