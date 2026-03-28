@@ -47,7 +47,7 @@ export function Orderbook({
   highlightChanges = true,
   depthMode = "cumulative",
   layout = "vertical",
-  scrollLock: scrollLockProp = true,
+  scrollLock: scrollLockProp = false,
   lastPrice,
   onPriceClick,
   formatPrice = defaultFormatPrice,
@@ -134,16 +134,21 @@ export function Orderbook({
   });
 
   // ── Scroll lock: center spread before paint ──
-  // Runs on EVERY render when locked. No dependency array.
-  // Uses getBoundingClientRect for robust positioning.
+  // Runs on every render when locked. Uses getBoundingClientRect for
+  // robust positioning regardless of offsetParent chain.
+  // Depends on smoothedAsks/smoothedBids to re-run when data changes.
   useLayoutEffect(() => {
     if (!scrollLockProp || !locked) return;
 
     const container = scrollRef.current;
     const spreadEl = spreadRef.current;
     if (!container || !spreadEl) return;
+
+    // If content fits within the container, no scroll needed —
+    // the flex layout centers the spread naturally
     if (container.scrollHeight <= container.clientHeight) return;
 
+    // Position of spread within the scroll content
     const spreadOffsetInContent =
       spreadEl.getBoundingClientRect().top -
       container.getBoundingClientRect().top +
@@ -156,10 +161,11 @@ export function Orderbook({
 
     isAdjustingRef.current = true;
     container.scrollTop = target;
+    // Clear flag asynchronously so the scroll event handler sees it
     requestAnimationFrame(() => {
       isAdjustingRef.current = false;
     });
-  });
+  }, [scrollLockProp, locked, smoothedAsks, smoothedBids]);
 
   // ── Scroll handler: detect user scroll to unlock ──
   const handleScroll = useCallback(() => {
@@ -208,14 +214,87 @@ export function Orderbook({
   );
   const HEADER_HEIGHT = showHeaders ? 29 : 0;
   const SPREAD_HEIGHT = showSpread ? 32 : 0;
-  const visibleHeight = depth * ROW_HEIGHT * 2 + SPREAD_HEIGHT;
-  const totalHeight = HEADER_HEIGHT + visibleHeight;
 
-  // Single render path — scrollLock only controls auto-centering
+  if (scrollLockProp) {
+    // Scroll lock mode: fixed container height, scrollable content
+    const visibleHeight = depth * ROW_HEIGHT * 2 + SPREAD_HEIGHT;
+    const totalHeight = HEADER_HEIGHT + visibleHeight;
+
+    return (
+      <div
+        className={`ok-orderbook ${isHorizontal ? "ok-horizontal" : "ok-vertical"} ok-${theme}${className ? ` ${className}` : ""}`}
+        style={{ height: totalHeight, ...style }}
+      >
+        {showHeaders && (
+          <div className="ok-headers">
+            <span className="ok-cell ok-price">Price</span>
+            <span className="ok-cell ok-size">Size</span>
+            <span className="ok-cell ok-total">Total</span>
+          </div>
+        )}
+
+        <div
+          ref={scrollRef}
+          className={`ok-body ok-body-scrollable ${isHorizontal ? "ok-body-horizontal" : ""}`}
+          style={{
+            height: visibleHeight,
+            overflowY: "auto",
+            scrollBehavior: "auto",
+            overflowAnchor: "none",
+          }}
+          onScroll={handleScroll}
+        >
+          <div className="ok-side ok-asks">
+            {smoothedAsks.map((level) => (
+              <OrderbookRow
+                key={level.price}
+                level={level}
+                flash={flash.getFlash(level.price, level.size)}
+                formatPrice={formatPrice}
+                formatSize={formatSize}
+                onPriceClick={onPriceClick}
+              />
+            ))}
+          </div>
+
+          {spread !== null && (
+            <div className="ok-spread" ref={spreadRef}>
+              {spreadContent}
+            </div>
+          )}
+
+          <div className="ok-side ok-bids">
+            {smoothedBids.map((level) => (
+              <OrderbookRow
+                key={level.price}
+                level={level}
+                flash={flash.getFlash(level.price, level.size)}
+                formatPrice={formatPrice}
+                formatSize={formatSize}
+                onPriceClick={onPriceClick}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Re-lock button when user has scrolled away */}
+        {!locked && (
+          <button className="ok-relock" onClick={handleRelock}>
+            Center spread
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  // ── Normal mode (no scroll lock) ──
+  const sideHeight = depth * ROW_HEIGHT;
+  const minHeight = HEADER_HEIGHT + sideHeight * 2 + SPREAD_HEIGHT;
+
   return (
     <div
       className={`ok-orderbook ${isHorizontal ? "ok-horizontal" : "ok-vertical"} ok-${theme}${className ? ` ${className}` : ""}`}
-      style={{ height: totalHeight, ...style }}
+      style={{ minHeight, ...style }}
     >
       {showHeaders && (
         <div className="ok-headers">
@@ -225,18 +304,8 @@ export function Orderbook({
         </div>
       )}
 
-      <div
-        ref={scrollRef}
-        className={`ok-body ok-body-scrollable ${isHorizontal ? "ok-body-horizontal" : ""}`}
-        style={{
-          height: visibleHeight,
-          overflowY: "auto",
-          scrollBehavior: "auto",
-          overflowAnchor: "none",
-        }}
-        onScroll={handleScroll}
-      >
-        <div className="ok-side ok-asks">
+      <div className={`ok-body ${isHorizontal ? "ok-body-horizontal" : ""}`}>
+        <div className="ok-side ok-asks" style={{ height: sideHeight }}>
           {isEmpty ? (
             <Skeleton rows={depth} />
           ) : (
@@ -254,12 +323,12 @@ export function Orderbook({
         </div>
 
         {spread !== null && (
-          <div className="ok-spread" ref={spreadRef}>
+          <div className="ok-spread">
             {spreadContent}
           </div>
         )}
 
-        <div className="ok-side ok-bids">
+        <div className="ok-side ok-bids" style={{ height: sideHeight }}>
           {isEmpty ? (
             <Skeleton rows={depth} />
           ) : (
@@ -276,13 +345,6 @@ export function Orderbook({
           )}
         </div>
       </div>
-
-      {/* Re-lock button when scroll lock is on but user scrolled away */}
-      {scrollLockProp && !locked && (
-        <button className="ok-relock" onClick={handleRelock}>
-          Center spread
-        </button>
-      )}
     </div>
   );
 }

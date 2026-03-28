@@ -222,8 +222,8 @@
    outer (.ok-spread-arrow) handles rotation via CSS transition
    inner (.ok-spread-arrow-motion) handles continuous bounce via CSS animation */
 @keyframes ok-arrow-bounce {
-  0%, 100% { transform: translateY(1.5px); }
-  50% { transform: translateY(-1.5px); }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
 }
 
 .ok-spread-arrow {
@@ -291,19 +291,12 @@
   border-radius: 2px;
 }
 
-/* In scroll mode:
-   - height: auto !important overrides any inline height
-   - min-height: 50% ensures spread stays centered when few levels
-   - Rows get flex-shrink: 0 below to prevent compression */
+/* In scroll mode, sides grow with content but have a min-height
+   so spread stays centered when content is shorter than viewport */
 .ok-body-scrollable .ok-side {
   overflow: visible;
   height: auto !important;
   min-height: 50%;
-}
-
-/* Prevent rows from compressing when side has min-height constraint */
-.ok-body-scrollable .ok-row {
-  flex-shrink: 0;
 }
 
 /* In scroll mode, asks still push to bottom for natural centering
