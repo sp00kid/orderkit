@@ -713,7 +713,7 @@ function App() {
           scrollLock={scrollLock}
           lastPrice={
             book.bids.length > 0 && book.asks.length > 0
-              ? (book.bids[0].price + book.asks[0].price) / 2
+              ? (Math.random() < 0.5 ? book.bids[0].price : book.asks[0].price)
               : undefined
           }
           onPriceClick={(price, side) => console.log(`[orderkit] clicked ${side} @ ${price}`)}

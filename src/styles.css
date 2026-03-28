@@ -222,8 +222,8 @@
    outer (.ok-spread-arrow) handles rotation via CSS transition
    inner (.ok-spread-arrow-motion) handles continuous bounce via CSS animation */
 @keyframes ok-arrow-bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
+  0%, 100% { transform: translateY(1.5px); }
+  50% { transform: translateY(-1.5px); }
 }
 
 .ok-spread-arrow {
