@@ -693,10 +693,10 @@ function App() {
         </div>
 
         <div className="demo-section">
-          <span className="demo-label">Scroll Lock</span>
+          <span className="demo-label">Mode</span>
           <div className="controls">
-            <button className={scrollLock ? "active" : ""} onClick={() => setScrollLock(true)}>On</button>
-            <button className={!scrollLock ? "active" : ""} onClick={() => setScrollLock(false)}>Off</button>
+            <button className={!scrollLock ? "active" : ""} onClick={() => setScrollLock(false)}>Fixed</button>
+            <button className={scrollLock ? "active" : ""} onClick={() => setScrollLock(true)}>Scroll</button>
           </div>
         </div>
       </div>

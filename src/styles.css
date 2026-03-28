@@ -299,6 +299,16 @@
   min-height: 50%;
 }
 
+/* Rows must not compress — keeps height consistent with fixed mode */
+.ok-body-scrollable .ok-row {
+  flex-shrink: 0;
+}
+
+/* Spread must not compress either */
+.ok-body-scrollable .ok-spread {
+  flex-shrink: 0;
+}
+
 /* In scroll mode, asks still push to bottom for natural centering
    when content is shorter than the viewport */
 .ok-body-scrollable .ok-asks {
