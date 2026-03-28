@@ -92,6 +92,18 @@
   justify-content: flex-end;
 }
 
+/* Row enter animation */
+@keyframes ok-row-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Rows */
 .ok-row {
   display: flex;
@@ -99,7 +111,10 @@
   position: relative;
   height: var(--ok-row-height);
   padding: 0 16px;
-  transition: background-color 800ms ease-out;
+  transition-property: background-color;
+  transition-duration: 800ms;
+  transition-timing-function: ease-out;
+  animation: ok-row-enter 200ms ease-out;
 }
 
 .ok-row:hover {
@@ -205,8 +220,15 @@
 
 /* Last price + direction arrow */
 .ok-spread-arrow {
-  font-size: 8px;
-  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  width: 12px;
+  height: 12px;
+}
+
+.ok-spread-arrow svg {
+  width: 12px;
+  height: 12px;
 }
 
 .ok-spread-arrow-up {

@@ -711,6 +711,11 @@ function App() {
           highlightChanges={true}
           depthMode={depthMode}
           scrollLock={scrollLock}
+          lastPrice={
+            book.bids.length > 0 && book.asks.length > 0
+              ? (book.bids[0].price + book.asks[0].price) / 2
+              : undefined
+          }
           onPriceClick={(price, side) => console.log(`[orderkit] clicked ${side} @ ${price}`)}
           formatPrice={formatPrice}
           formatSize={formatSize}
