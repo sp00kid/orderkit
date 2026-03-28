@@ -291,11 +291,18 @@
   border-radius: 2px;
 }
 
-/* In scroll mode, sides grow naturally with content.
-   Row height stays consistent via --ok-row-height (same as normal mode). */
+/* In scroll mode:
+   - height: auto !important overrides any inline height
+   - min-height: 50% ensures spread stays centered when few levels
+   - Rows get flex-shrink: 0 below to prevent compression */
 .ok-body-scrollable .ok-side {
   overflow: visible;
-  height: auto;
+  height: auto !important;
+  min-height: 50%;
+}
+
+/* Prevent rows from compressing when side has min-height constraint */
+.ok-body-scrollable .ok-row {
   flex-shrink: 0;
 }
 
